@@ -37,7 +37,240 @@ button{padding:12px;border-radius:12px;border:1px solid #ccc;cursor:pointer}
 </div>
 
 <script>
+ 
 const questionBank = [
+
+/* ========= OSI ========= */
+{type:"mc",title:"OSI 第 1 層是？",options:["Network","Physical","Transport","Session"],answer:1,explain:"Physical layer：實體傳輸"},
+{type:"mc",title:"OSI 第 2 層主要處理？",options:["IP","Frame","Port","HTTP"],answer:1,explain:"Data Link：Frame 與 MAC"},
+{type:"mc",title:"OSI 第 3 層功能？",options:["Frame","Routing","TCP","Encryption"],answer:1,explain:"Network layer 負責 Routing"},
+{type:"mc",title:"TCP 位於 OSI 哪一層？",options:["L2","L3","L4","L7"],answer:2,explain:"Transport layer"},
+{type:"mc",title:"哪一層負責加解密？",options:["Session","Presentation","Application","Network"],answer:1,explain:"Presentation layer"},
+
+/* ========= Network Topology ========= */
+{type:"mc",title:"哪一個不是網路拓樸？",options:["Bus","Ring","Star","Cache"],answer:3,explain:"Cache 不是拓樸"},
+{type:"mc",title:"Star 拓樸中心節點故障會？",options:["沒影響","全部中斷","只影響一台","變 Mesh"],answer:1,explain:"中心壞掉全斷"},
+{type:"mc",title:"Mesh 拓樸的特點？",options:["成本低","容錯高","單一路徑","架設簡單"],answer:1,explain:"多重路徑，容錯高"},
+
+/* ========= Network Devices ========= */
+{type:"mc",title:"Hub 工作在哪一層？",options:["L1","L2","L3","L4"],answer:0,explain:"Hub 屬於實體層"},
+{type:"mc",title:"Switch 依什麼轉送封包？",options:["IP","MAC","Port","Protocol"],answer:1,explain:"MAC address"},
+{type:"mc",title:"Router 的主要功能？",options:["放大訊號","Frame 轉送","IP Routing","加密"],answer:2,explain:"依 IP 做 Routing"},
+{type:"mc",title:"Bridge 的功能？",options:["放大訊號","連接不同網段","連接相同網段","IP Routing"],answer:2,explain:"Bridge 連接相同網段"},
+
+/* ========= Commands ========= */
+{type:"mc",title:"查詢 DNS 使用哪個指令？",options:["ping","tracert","nslookup","ipconfig"],answer:2,explain:"nslookup 查 DNS"},
+{type:"mc",title:"顯示本機 IP 設定？",options:["ping","ipconfig","nslookup","tracert"],answer:1,explain:"ipconfig"},
+{type:"mc",title:"追蹤封包路徑？",options:["ping","ipconfig","tracert","nslookup"],answer:2,explain:"tracert"},
+
+/* ========= Subnet ========= */
+{type:"mc",title:"255.255.255.224 等於？",options:["/26","/27","/28","/25"],answer:1,explain:"224=11100000"},
+{type:"mc",title:"/27 每個子網路大小？",options:["16","32","64","128"],answer:1,explain:"256-224=32"},
+{type:"mc",title:"255.255.255.192 每段大小？",options:["32","64","128","256"],answer:1,explain:"192 → 64"},
+{type:"mc",title:"8.8.8.8 與 8.8.8.108 (/27) 是否同網段？",options:["是","否"],answer:1,explain:"0–31 與 96–127"},
+
+/* ========= Disk ========= */
+{type:"mc",title:"6 Gb/s 等於多少 GB/s？",options:["0.75","6","4.8","0.6"],answer:0,explain:"6 ÷ 8 = 0.75"},
+{type:"input",title:"7200rpm，6Gb/s，讀 4.7GB 約幾秒？",
+ checker:s=>Math.abs(Number(s)-6.29)<=0.05,
+ answerText:"約 6.29 秒",
+ explain:"Seek + rotation + transfer"},
+
+/* ========= CPU Scheduling ========= */
+{type:"input",title:"FCFS：(0,6)(1,4)(2,10)(3,5) 平均等待時間？",
+ checker:s=>Math.abs(Number(s)-7.5)<=0.01,
+ answerText:"7.5",
+ explain:"FCFS 計算"},
+{type:"input",title:"Non-preemptive SJF 同上平均等待？",
+ checker:s=>Math.abs(Number(s)-6.25)<=0.01,
+ answerText:"6.25",
+ explain:"SJF"},
+
+/* ========= RAID ========= */
+{type:"mc",title:"RAID 0 特性？",options:["鏡像","條帶","Parity","容錯"],answer:1,explain:"Striping"},
+{type:"mc",title:"RAID 1 特性？",options:["條帶","Parity","鏡像","無容錯"],answer:2,explain:"Mirroring"},
+{type:"mc",title:"RAID 5 需要至少幾顆硬碟？",options:["2","3","4","5"],answer:1,explain:"至少 3 顆"},
+
+/* ========= TCP / UDP ========= */
+{type:"mc",title:"TCP 特性？",options:["不可靠","無順序","可靠","無重傳"],answer:2,explain:"Reliable"},
+{type:"mc",title:"UDP 常用於？",options:["FTP","Email","Streaming","HTTP"],answer:2,explain:"低延遲"},
+{type:"mc",title:"TCP 三向交握順序？",options:["SYN→ACK→FIN","SYN→SYN-ACK→ACK","ACK→SYN","FIN→ACK"],answer:1,explain:"3-way handshake"},
+
+/* ========= IoT ========= */
+{type:"mc",title:"下列哪個是 IoT 通訊技術？",options:["FTP","LoRa","SMTP","HTTP"],answer:1,explain:"LoRa"},
+{type:"mc",title:"NB-IoT 屬於？",options:["WiFi","IoT","LAN","Bluetooth"],answer:1,explain:"IoT"},
+
+/* ========= SEO ========= */
+{type:"mc",title:"SEO 正確作法？",options:["買廣告","noindex","關鍵字優化","圖片越大越好"],answer:2,explain:"SEO 是自然搜尋"},
+
+/* ========= Logic ========= */
+{type:"input",title:"Σ(0,2,5,7,8)+d(10,13,15) 最簡 SOP？",
+ checker:s=>["XZ+X'Z'","X'Z'+XZ"].includes(s.toUpperCase().replace(/\s+/g,'')),
+ answerText:"XZ + X'Z'",
+ explain:"XNOR"},
+
+/* ========= Hardware 組裝（考試中間那題） ========= */
+{type:"mc",title:"【主機板】Z790、Socket LGA1700、支援 DDR5。哪一組正確？",
+ options:[
+  "i7-9700K / DDR5 / SATA",
+  "i5-13600K / DDR5 / NVMe",
+  "Ryzen 7 5700X / DDR4 / SATA",
+  "i5-13600K / DDR4 / IDE"
+ ],
+ answer:1,
+ explain:"LGA1700 + DDR5"},
+{type:"mc",title:"【主機板】X570、Socket AM4、支援 DDR4。哪一組正確？",
+ options:[
+  "i7-12700 / DDR4 / SATA",
+  "Ryzen 7 5700X / DDR4 / NVMe",
+  "Ryzen 7 7700X / DDR5 / NVMe",
+  "Ryzen 5 3600 / DDR5 / SATA"
+ ],
+ answer:1,
+ explain:"AM4 + DDR4"},
+{type:"mc",title:"【主機板】LGA1700、僅支援 DDR4。哪一組可用？",
+ options:[
+  "i5-12400 / DDR5 / NVMe",
+  "i5-12400 / DDR4 / SATA",
+  "Ryzen 5600 / DDR4 / SATA",
+  "i7-9700 / DDR4 / NVMe"
+ ],
+ answer:1,
+ explain:"Socket 與記憶體世代須相符"},
+
+/* ========= Compare ========= */
+{type:"mc",title:"CISC vs RISC 正確？",
+ options:["RISC 複雜","CISC 指令少","RISC 指令簡單","CISC 快"],
+ answer:2,explain:"RISC 精簡"},
+{type:"mc",title:"Virtual memory 是？",
+ options:["硬碟","記憶體擴充","Cache","Register"],
+ answer:1,explain:"Disk 模擬 RAM"},
+{type:"mc",title:"Cache 的功能？",
+ options:["存檔","加速存取","備份","傳輸"],
+ answer:1,explain:"加速 CPU"},
+{type:"mc",title:"MFLOPS 衡量？",
+ options:["指令數","浮點效能","頻寬","容量"],
+ answer:1,explain:"Floating-point"}
+];
+/* ========= Computer Assembly（考試卷版本） ========= */
+
+// ===== 記憶體判斷 =====
+{
+  type:"mc",
+  title:`【主機板規格】
+PRIME Z790-P WIFI
+• Socket LGA1700
+• Intel Z790
+• 支援 DDR5 4800 / 5600 / 7200+(OC)
+• Max 128GB
+
+請選出「可正常使用」的記憶體模組`,
+  options:[
+    "ADATA DDR5-5600 16GB",
+    "Kingston DDR4-3200 16GB",
+    "Samsung DDR3-1600 8GB",
+    "DDR5-8400 16GB"
+  ],
+  answer:0,
+  explain:"Z790 + LGA1700 僅支援 DDR5；5600 在支援範圍內"
+},
+
+// ===== CPU 判斷 =====
+{
+  type:"mc",
+  title:`【主機板規格】
+PRIME Z790-P WIFI
+• Socket LGA1700
+• Intel Z790
+
+請選出「可搭配使用」的 CPU`,
+  options:[
+    "Intel Core i5-13600K",
+    "Intel Core i7-9700K",
+    "AMD Ryzen 7 5700X",
+    "AMD Ryzen 5 7600"
+  ],
+  answer:0,
+  explain:"LGA1700 支援 12/13/14 代 Intel CPU"
+},
+
+// ===== 硬碟介面判斷 =====
+{
+  type:"mc",
+  title:`【主機板規格】
+PRIME Z790-P WIFI
+• 4 × SATA 6Gb/s
+• 3 × M.2 PCIe 4.0
+
+請選出「可直接使用」的硬碟`,
+  options:[
+    "Samsung 980 PRO NVMe PCIe 4.0",
+    "Intel Optane PCIe Gen5",
+    "IDE 3.5 吋硬碟",
+    "mSATA SSD"
+  ],
+  answer:0,
+  explain:"支援 SATA 與 M.2 PCIe 4.0"
+},
+
+// ===== AMD 主機板組裝 =====
+{
+  type:"mc",
+  title:`【主機板規格】
+PROART X570-CREATOR WIFI
+• Socket AM4
+• 支援 DDR4 3200 / 3600
+• PCIe 4.0
+
+請選出「正確的 CPU」`,
+  options:[
+    "AMD Ryzen 7 5700X",
+    "AMD Ryzen 7 7700X",
+    "Intel Core i5-12400",
+    "Intel Xeon E5-2678"
+  ],
+  answer:0,
+  explain:"X570 = AM4 平台，支援 Ryzen 3000 / 5000 系列"
+},
+
+{
+  type:"mc",
+  title:`【主機板規格】
+PROART X570-CREATOR WIFI
+• Socket AM4
+• DDR4 only
+
+請選出「可使用的記憶體」`,
+  options:[
+    "ADATA DDR4-3600 16GB",
+    "ADATA DDR5-5600 16GB",
+    "Kingston DDR3-1600 8GB",
+    "DDR2-800"
+  ],
+  answer:0,
+  explain:"AM4 僅支援 DDR4"
+},
+
+// ===== 整合判斷題（最像考試）=====
+{
+  type:"mc",
+  title:`【主機板規格】
+B660M-A WIFI
+• Socket LGA1700
+• 支援 DDR4 3200
+• PCIe 4.0
+
+下列哪一組「全部正確可用」？`,
+  options:[
+    "i5-12400 + DDR4-3200 + SATA HDD",
+    "i7-9700 + DDR4-3200 + NVMe",
+    "Ryzen 5600 + DDR4-3200 + SATA",
+    "i5-12400 + DDR5-5600 + NVMe"
+  ],
+  answer:0,
+  explain:"LGA1700 + DDR4 板只能用 DDR4 記憶體"
+}
+
 /* ========= OSI ========= */
 {type:"mc",title:"OSI 第 1 層是？",options:["Network","Physical","Transport","Session"],answer:1,explain:"Physical layer"},
 {type:"mc",title:"OSI 第 3 層功能？",options:["Frame","Routing","TCP","HTTP"],answer:1,explain:"Routing/IP"},
