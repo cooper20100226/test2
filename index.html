@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算機概論｜超大量考古題刷題系統</title>
+<style>
+body{font-family:system-ui,"Noto Sans TC";margin:0;background:#f6fbff}
+.wrap{max-width:960px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-top:12px}
+button{padding:12px;border-radius:12px;border:1px solid #ccc;cursor:pointer}
+.opt{display:block;width:100%;margin:6px 0;text-align:left}
+.correct{background:#e7f8ef}
+.wrong{background:#fdecec}
+.hidden{display:none}
+.explain{background:#f1f5f9;padding:12px;border-radius:12px;margin-top:8px}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<h2>📘 計算機概論｜超大量考古題刷題</h2>
+<div>正確率：<span id="acc">0%</span></div>
+
+<div class="card">
+<h3 id="qTitle"></h3>
+<div id="mcArea"></div>
+
+<div id="inputArea" class="hidden">
+<input id="answerInput" placeholder="輸入答案" style="width:100%;padding:12px">
+<button onclick="submitInput()">送出</button>
+</div>
+
+<div id="explain" class="explain hidden"></div>
+<button onclick="nextQ()">下一題</button>
+</div>
+</div>
+
+<script>
+const questionBank = [
+/* ========= OSI ========= */
+{type:"mc",title:"OSI 第 1 層是？",options:["Network","Physical","Transport","Session"],answer:1,explain:"Physical layer"},
+{type:"mc",title:"OSI 第 3 層功能？",options:["Frame","Routing","TCP","HTTP"],answer:1,explain:"Routing/IP"},
+{type:"mc",title:"OSI 第 4 層協定？",options:["IP","MAC","TCP","HTTP"],answer:2,explain:"Transport layer"},
+{type:"mc",title:"哪層負責加解密？",options:["Session","Presentation","Application","Network"],answer:1,explain:"Presentation layer"},
+
+/* ========= Topology ========= */
+{type:"mc",title:"哪個不是網路拓樸？",options:["Bus","Ring","Tree","Cache"],answer:3,explain:"Cache 非拓樸"},
+{type:"mc",title:"星狀拓樸中心節點壞掉會？",options:["沒影響","全部中斷","只斷一台","變 mesh"],answer:1,explain:"Star 中心壞全斷"},
+
+/* ========= Devices ========= */
+{type:"mc",title:"Hub 屬於哪一層？",options:["L1","L2","L3","L4"],answer:0,explain:"Hub 是實體層"},
+{type:"mc",title:"Switch 依什麼轉送？",options:["IP","MAC","Port","Protocol"],answer:1,explain:"MAC address"},
+{type:"mc",title:"Router 工作在哪層？",options:["L1","L2","L3","L7"],answer:2,explain:"Network layer"},
+
+/* ========= Command ========= */
+{type:"mc",title:"查 DNS 用哪個指令？",options:["ping","tracert","nslookup","ipconfig"],answer:2,explain:"DNS 查詢"},
+{type:"mc",title:"顯示本機 IP？",options:["ping","ipconfig","nslookup","tracert"],answer:1,explain:"ipconfig"},
+
+/* ========= Subnet ========= */
+{type:"mc",title:"255.255.255.224 = ?",options:["/26","/27","/28","/25"],answer:1,explain:"224=11100000"},
+{type:"mc",title:"/27 每段大小？",options:["16","32","64","128"],answer:1,explain:"256-224=32"},
+{type:"mc",title:"8.8.8.8 與 8.8.8.108 (/27)",options:["同網段","不同"],answer:1,explain:"不同區段"},
+{type:"mc",title:"255.255.255.192 每段？",options:["32","64","128","256"],answer:1,explain:"64"},
+
+/* ========= Disk ========= */
+{type:"input",title:"7200rpm 6Gb/s 4.7GB 約幾秒？",
+ checker:s=>Math.abs(Number(s)-6.29)<=0.05,
+ answerText:"6.29",
+ explain:"Seek+rotation+transfer"},
+
+/* ========= Scheduling ========= */
+{type:"input",title:"FCFS (0,6)(1,4)(2,10)(3,5) 平均等待？",
+ checker:s=>Math.abs(Number(s)-7.5)<=0.01,
+ answerText:"7.5",
+ explain:"FCFS 計算"},
+{type:"input",title:"Non-preemptive SJF 同上 平均等待？",
+ checker:s=>Math.abs(Number(s)-6.25)<=0.01,
+ answerText:"6.25",
+ explain:"SJF"},
+
+/* ========= RAID ========= */
+{type:"mc",title:"RAID 0 特性？",options:["鏡像","條帶","Parity","容錯"],answer:1,explain:"Striping"},
+{type:"mc",title:"RAID 1？",options:["條帶","Parity","鏡像","無容錯"],answer:2,explain:"Mirroring"},
+{type:"mc",title:"RAID 5？",options:["Mirror","Striping+Parity","No fault","2 disks"],answer:1,explain:"Distributed parity"},
+
+/* ========= TCP/UDP ========= */
+{type:"mc",title:"TCP 特性？",options:["不可靠","無順序","可靠","無重傳"],answer:2,explain:"Reliable"},
+{type:"mc",title:"UDP 常用於？",options:["Email","Web","Streaming","FTP"],answer:2,explain:"低延遲"},
+{type:"mc",title:"TCP 三向交握？",options:["SYN→ACK→FIN","SYN→SYN-ACK→ACK","ACK→SYN","FIN→ACK"],answer:1,explain:"3-way handshake"},
+
+/* ========= IoT ========= */
+{type:"mc",title:"IoT 協定？",options:["HTTP","FTP","LoRa","SMTP"],answer:2,explain:"LoRa"},
+{type:"mc",title:"NB-IoT 屬於？",options:["WiFi","IoT","LAN","Bluetooth"],answer:1,explain:"IoT"},
+
+/* ========= SEO ========= */
+{type:"mc",title:"SEO 作法？",options:["買廣告","關閉 index","優化關鍵字","圖片放最大"],answer:2,explain:"SEO"},
+
+/* ========= Logic ========= */
+{type:"input",title:"Σ(0,2,5,7,8)+d(10,13,15) 最簡 SOP？",
+ checker:s=>["XZ+X'Z'","X'Z'+XZ"].includes(s.toUpperCase().replace(/\s+/g,'')),
+ answerText:"XZ + X'Z'",
+ explain:"XNOR"},
+
+/* ========= Compare ========= */
+{type:"mc",title:"CISC vs RISC 正確？",
+ options:["RISC 複雜","CISC 指令少","RISC 指令簡單","CISC 快"],
+ answer:2,explain:"RISC 精簡"},
+{type:"mc",title:"Virtual memory 是？",
+ options:["硬碟","記憶體擴充","CPU cache","Register"],
+ answer:1,explain:"Disk 模擬 RAM"},
+{type:"mc",title:"Cache 功能？",
+ options:["存檔","加速存取","備份","傳輸"],
+ answer:1,explain:"Speed up"},
+{type:"mc",title:"MFLOPS 衡量？",
+ options:["指令數","浮點效能","頻寬","容量"],
+ answer:1,explain:"Floating point"}
+];
+
+let idx=0,correct=0,total=0;
+const $=id=>document.getElementById(id);
+
+function render(){
+ const q=questionBank[idx];
+ $("qTitle").textContent=q.title;
+ $("mcArea").innerHTML="";
+ $("inputArea").classList.add("hidden");
+ $("explain").classList.add("hidden");
+ if(q.type==="mc"){
+  q.options.forEach((o,i)=>{
+   const b=document.createElement("button");
+   b.className="opt";
+   b.textContent=o;
+   b.onclick=()=>checkMC(i,b);
+   $("mcArea").appendChild(b);
+  });
+ }else $("inputArea").classList.remove("hidden");
+}
+
+function checkMC(i,b){
+ const q=questionBank[idx]; total++;
+ if(i===q.answer){correct++;b.classList.add("correct")}
+ else b.classList.add("wrong");
+ showExplain(q);
+}
+
+function submitInput(){
+ const q=questionBank[idx]; total++;
+ if(q.checker($("answerInput").value)) correct++;
+ showExplain(q);
+}
+
+function showExplain(q){
+ $("explain").classList.remove("hidden");
+ $("explain").innerHTML="答案："+(q.answerText||q.options[q.answer])+"<br>"+q.explain;
+ $("acc").textContent=Math.round(correct/total*100)+"%";
+}
+
+function nextQ(){ idx=(idx+1)%questionBank.length; $("answerInput").value=""; render(); }
+render();
+</script>
+</body>
+</html>
